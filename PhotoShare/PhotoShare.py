@@ -77,5 +77,14 @@ def delete_photo(photo_id):
     return redirect("/index")
 
 
+@app.route('/like_photo/<int:photo_id>', methods=['GET'])
+def like_photo(photo_id):
+    if 'username' not in session:
+        return redirect('/login')
+    nm = PhotoModel(db.get_connection())
+    nm.likeit(photo_id)
+    return redirect("/index")
+
+
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')

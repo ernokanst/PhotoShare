@@ -18,7 +18,8 @@ class PhotoModel:
         cursor = self.connection.cursor()
         cursor.execute('''INSERT INTO photo 
                           (title, content, user_id, likes) 
-                          VALUES (?,?,?,?)''', (title, content, str(user_id)))
+                          VALUES (?,?,?,?)''', (title, content, str(user_id),
+                                                str(likes)))
         cursor.close()
         self.connection.commit()
 
@@ -42,5 +43,15 @@ class PhotoModel:
         cursor = self.connection.cursor()
         cursor.execute('''DELETE FROM photo WHERE id = ?''',
                        (str(photo_id),))
+        cursor.close()
+        self.connection.commit()
+
+    def likeit(self, photo_id):
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT likes FROM photo WHERE id = ?",
+                       (str(photo_id),))
+        like_count = int(cursor.fetchone()[0] + 1)
+        cursor.execute('''UPDATE photo SET likes = ? WHERE id = ?''',
+                       (str(like_count), str(photo_id)))
         cursor.close()
         self.connection.commit()
