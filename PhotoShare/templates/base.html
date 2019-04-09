@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>PhotoShare</title>
+<style>
+.mybody {padding: 20px;}
+</style>
+</head>
+<body class="mybody">
+
+<div class="logotype">
+<img src="/static/img/lol.png"></div>
+<input type="button" class="btn btn-primary" value="ВКонтакте" onclick=" relocate_vk()">
+
+<script>
+function relocate_vk()
+{
+     location.href = "https://vk.com/";
+} 
+</script>
+<input type="button" class="btn btn-danger" value="YouTube" onclick=" relocate_yt()">
+
+<script>
+function relocate_yt()
+{
+     location.href = "https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw";
+} 
+</script>
+</div>
+<div style = "text-align: right">
+{% if "username" in session %}
+    <a class="navbar-brand" href="/logout">{{session['username']}}</a>
+{% endif %}
+</div>
+<div style = "text-align: center">
+{% block content %}{% endblock %}
+<div>
+</body>
+ </html>
+  </body>
+</html>

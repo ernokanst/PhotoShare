@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>PhotoShare</h1>
+    <a href="/add_photo">Добавить фото</a>
+{% for item in photo %}
+    <div class="alert alert-dark" role="alert">
+        <h2>{{item[1]}}</h2>
+        <div><img src="/static/img/{{item[2]}}" width=500 alt="Ошибка загрузки фото"></div>
+        <a href="/delete_photo/{{item[0]}}">Удалить фото</a>
+    </div>
+{% endfor %}
+{% endblock %}
