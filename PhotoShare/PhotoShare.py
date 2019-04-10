@@ -14,6 +14,7 @@ app.config['SECRET_KEY'] = 'jOaqY9515WL6IxQB'
 db = DB('db.db')
 PhotoModel(db.get_connection()).init_table()
 UsersModel(db.get_connection()).init_table()
+current_page = 'main'
 
 
 # http://127.0.0.1:8080/login
@@ -40,8 +41,20 @@ def logout():
 
 
 @app.route('/')
+def main():
+    current_page = 'main'
+    photo = PhotoModel(db.get_connection()).get_all()
+    return render_template('main.html', photo=photo)
+
+
+@app.route('/main')
+def redirect_to_main():
+    return redirect('/')
+
+
 @app.route('/index')
 def index():
+    current_page = 'index'
     if 'username' not in session:
         return redirect('/login')
     photo = PhotoModel(db.get_connection()).get_all(session['user_id'])
@@ -65,7 +78,7 @@ def add_photo():
         nm = PhotoModel(db.get_connection())
         nm.insert(title, filename, session['user_id'], 0)
         return redirect("/index")
-    return render_template('add_photo.html', title='Добавление фото', form=form, username=session['username'])
+    return render_template('add_photo.html', title='АО МММ', form=form, username=session['username'])
 
 
 @app.route('/delete_photo/<int:photo_id>', methods=['GET'])
@@ -83,7 +96,7 @@ def like_photo(photo_id):
         return redirect('/login')
     nm = PhotoModel(db.get_connection())
     nm.likeit(photo_id)
-    return redirect("/index")
+    return redirect("/" + current_page)
 
 
 if __name__ == '__main__':

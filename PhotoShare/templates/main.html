@@ -1,14 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Ваш аккаунт</h1>
+    <h1>Главная</h1>
     <a href="/add_photo">Добавить фото</a>
 {% for item in photo %}
     <div class="alert alert-dark" role="alert">
         <h2>{{item[1]}}</h2>
         <div><img src="/static/img/{{item[2]}}" width=500 alt="Ошибка загрузки фото"></div>
-        <a href="/like_photo/{{item[0]}}">👍 {{item[4]}}</a><br>
-        <a href="/delete_photo/{{item[0]}}">Удалить фото</a>
+        <a href="/like_photo/{{item[0]}}">👍 {{item[4]}}</a>
     </div>
 {% endfor %}
 {% endblock %}
