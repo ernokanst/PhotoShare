@@ -12,7 +12,7 @@
 <body class="mybody">
 
 <div class="logotype">
-<img src="/static/img/lol.png"></div>
+<a href="/"><img src="/static/img/lol.png" height=100></a></div>
 <input type="button" class="btn btn-primary" value="ВКонтакте" onclick=" relocate_vk()">
 
 <script>
@@ -31,7 +31,11 @@ function relocate_yt()
 </script>
 </div>
 <div style = "text-align: right">
+{% if "username" not in session %}
+	<a href="/login">Войти</a>
+{% endif %}
 {% if "username" in session %}
+	<a href="/index"><img src="/static/img/{{session['content']}}" height=50 alt="Аватар"></a>
     <a class="navbar-brand" href="/logout">{{session['username']}}</a>
 {% endif %}
 </div>

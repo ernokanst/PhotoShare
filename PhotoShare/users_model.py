@@ -7,16 +7,17 @@ class UsersModel:
         cursor.execute('''CREATE TABLE IF NOT EXISTS users 
                             (id INTEGER PRIMARY KEY AUTOINCREMENT, 
                              user_name VARCHAR(50),
-                             password_hash VARCHAR(128)
+                             password_hash VARCHAR(128),
+                             content VARCHAR(1000)
                              )''')
         cursor.close()
         self.connection.commit()
 
-    def insert(self, user_name, password_hash):
+    def insert(self, user_name, password_hash, content):
         cursor = self.connection.cursor()
         cursor.execute('''INSERT INTO users 
-                          (user_name, password_hash) 
-                          VALUES (?,?)''', (user_name, password_hash))
+                          (user_name, password_hash, content) 
+                          VALUES (?,?,?)''', (user_name, password_hash, content))
         cursor.close()
         self.connection.commit()
 
@@ -34,6 +35,14 @@ class UsersModel:
 
     def exists(self, user_name, password_hash):
         cursor = self.connection.cursor()
-        cursor.execute("SELECT * FROM users WHERE user_name = ? AND password_hash = ?", (user_name, password_hash))
+        cursor.execute(
+            "SELECT * FROM users WHERE user_name = ? AND password_hash = ?", (user_name, password_hash))
         row = cursor.fetchone()
-        return (True, row[0]) if row else (False,)
+        return (True, row) if row else (False,)
+
+    def login_used(self, user_name):
+        cursor = self.connection.cursor()
+        cursor.execute(
+            "SELECT * FROM users WHERE user_name = ?", (user_name,))
+        row = cursor.fetchone()
+        return True if row else False

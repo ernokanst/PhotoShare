@@ -2,6 +2,7 @@ from add_photo import AddPhotoForm
 from db import DB
 from flask import Flask, redirect, render_template, session
 from loginform import LoginForm
+from regform import RegForm
 from photo_model import PhotoModel
 from users_model import UsersModel
 from werkzeug.utils import secure_filename
@@ -28,20 +29,56 @@ def login():
         exists = user_model.exists(user_name, password)
         if (exists[0]):
             session['username'] = user_name
-            session['user_id'] = exists[1]
+            session['user_id'] = exists[1][0]
+            session['content'] = exists[1][-1]
         return redirect("/index")
     return render_template('login.html', title='Авторизация', form=form)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegForm()
+    if form.validate_on_submit():
+        user_name = form.username.data
+        password = form.password.data
+        repassword = form.repassword.data
+        content = form.content.data
+        filename = secure_filename(content.filename)
+        user_model = UsersModel(db.get_connection())
+        print(user_name)
+        exists = user_model.login_used(user_name)
+        if exists:
+            return render_template('register.html', title='Регистрация', form=form)
+        else:
+            if password == repassword:
+                if os.path.isfile(os.path.join('static', 'img', filename)):
+                    while os.path.isfile(os.path.join('static', 'img', filename)):
+                        filename = filename.split('.')
+                        filename = '.'.join(
+                            [filename[0] + 'A', filename[-1]])
+                content.save(os.path.join('static', 'img', filename))
+                user_model.insert(user_name, password, filename)
+                exists = user_model.exists(user_name, password)
+                session['username'] = user_name
+                session['user_id'] = exists[1][0]
+                session['content'] = exists[1][-1]
+            else:
+                return render_template('register.html', title='Регистрация', form=form)
+        return redirect("/index")
+    return render_template('register.html', title='Регистрация', form=form)
 
 
 @app.route('/logout')
 def logout():
     session.pop('username', 0)
     session.pop('user_id', 0)
+    session.pop('content', 0)
     return redirect('/login')
 
 
 @app.route('/')
 def main():
+    global current_page
     current_page = 'main'
     photo = PhotoModel(db.get_connection()).get_all()
     return render_template('main.html', photo=photo)
@@ -54,6 +91,7 @@ def redirect_to_main():
 
 @app.route('/index')
 def index():
+    global current_page
     current_page = 'index'
     if 'username' not in session:
         return redirect('/login')
@@ -92,6 +130,7 @@ def delete_photo(photo_id):
 
 @app.route('/like_photo/<int:photo_id>', methods=['GET'])
 def like_photo(photo_id):
+    global current_page
     if 'username' not in session:
         return redirect('/login')
     nm = PhotoModel(db.get_connection())
