@@ -6,9 +6,33 @@
         <h2>{{item[1]}}</h2>
         <div><img src="/static/img/{{item[2]}}" width=500 alt="Ошибка загрузки фото"></div>
         <a href="/like_photo/{{item[0]}}">👍 {{item[4]}}</a><br>
-        {% if "username" in session %}
-		<a href="/delete_photo/{{item[0]}}">Удалить фото</a>
-		{% endif %}
     </div>
 {% endfor %}
+<div style = "text-align: left">
+<h2>Комментарии</h2>
+{% if "username" in session %}
+    <h2>{{session['username']}}</h2>
+	 <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.CommentText.label }}<br>
+            {{ form.CommentText }}<br>
+            {% for error in form.CommentText.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endif %}
+{% for item in comments %}
+    <div class="alert alert-dark" role="alert">
+    	<div style = "text-align: left">
+    	<h3>{{item[1]}}</h3>
+    	<div>{{item[3]}}</div>
+    	</div>
+    </div>
+{% endfor %}
+</div>
 {% endblock %}

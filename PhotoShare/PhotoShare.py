@@ -5,6 +5,7 @@ from loginform import LoginForm
 from regform import RegForm
 from photo_model import PhotoModel
 from users_model import UsersModel
+from comment_model import CommentModel
 from add_comment import AddCommentForm
 from werkzeug.utils import secure_filename
 import os
@@ -16,6 +17,7 @@ app.config['SECRET_KEY'] = 'jOaqY9515WL6IxQB'
 db = DB('db.db')
 PhotoModel(db.get_connection()).init_table()
 UsersModel(db.get_connection()).init_table()
+CommentModel(db.get_connection()).init_table()
 current_page = 'main'
 
 
@@ -100,12 +102,22 @@ def index():
     return render_template('index.html', username=session['username'], photo=photo)
 
 
-@app.route('/photo/<int:photo_id>', methods=['GET'])
+@app.route('/photo/<int:photo_id>', methods=['GET', 'POST'])
 def posted_photo(photo_id):
     global current_page
     current_page = 'photo/' + str(photo_id)
     photo = [PhotoModel(db.get_connection()).get(photo_id)]
-    return render_template('photo.html', photo=photo)
+    comments = CommentModel(db.get_connection()).get(photo_id)
+    form = AddCommentForm()
+    if form.validate_on_submit():
+        CommentText = form.CommentText.data
+        nm = CommentModel(db.get_connection())
+        nm.insert(session['username'], photo_id, CommentText)
+        return redirect('/photo/' + str(photo_id))
+    if 'username' in session:
+        return render_template('photo.html', photo=photo, comments=comments, form=form, username=session['username'])
+    else:
+        return render_template('photo.html', photo=photo, comments=comments, form=form, username='Anonymous')
 
 
 @app.route('/add_photo', methods=['GET', 'POST'])
