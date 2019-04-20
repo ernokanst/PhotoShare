@@ -5,6 +5,7 @@ from loginform import LoginForm
 from regform import RegForm
 from photo_model import PhotoModel
 from users_model import UsersModel
+from add_comment import AddCommentForm
 from werkzeug.utils import secure_filename
 import os
 
@@ -99,6 +100,14 @@ def index():
     return render_template('index.html', username=session['username'], photo=photo)
 
 
+@app.route('/photo/<int:photo_id>', methods=['GET'])
+def posted_photo(photo_id):
+    global current_page
+    current_page = 'photo/' + str(photo_id)
+    photo = [PhotoModel(db.get_connection()).get(photo_id)]
+    return render_template('photo.html', photo=photo)
+
+
 @app.route('/add_photo', methods=['GET', 'POST'])
 def add_photo():
     if 'username' not in session:
@@ -116,7 +125,7 @@ def add_photo():
         nm = PhotoModel(db.get_connection())
         nm.insert(title, filename, session['user_id'], 0)
         return redirect("/index")
-    return render_template('add_photo.html', title='АО МММ', form=form, username=session['username'])
+    return render_template('add_photo.html', title='Добавить фото', form=form, username=session['username'])
 
 
 @app.route('/delete_photo/<int:photo_id>', methods=['GET'])
