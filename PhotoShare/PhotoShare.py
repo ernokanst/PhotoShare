@@ -149,6 +149,16 @@ def delete_photo(photo_id):
     return redirect("/index")
 
 
+@app.route('/delete_comment/<int:comment_id>', methods=['GET'])
+def delete_comment(comment_id):
+    global current_page
+    if 'username' not in session:
+        return redirect('/login')
+    nm = CommentModel(db.get_connection())
+    nm.delete(comment_id)
+    return redirect("/" + current_page)
+
+
 @app.route('/like_photo/<int:photo_id>', methods=['GET'])
 def like_photo(photo_id):
     global current_page

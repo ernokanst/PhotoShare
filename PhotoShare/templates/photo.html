@@ -6,6 +6,9 @@
         <h2>{{item[1]}}</h2>
         <div><img src="/static/img/{{item[2]}}" width=500 alt="Ошибка загрузки фото"></div>
         <a href="/like_photo/{{item[0]}}">👍 {{item[4]}}</a><br>
+        {% if session['user_id'] == item[3] %}
+        <a href="/delete_photo/{{item[0]}}">Удалить фото</a>
+        {% endif %}
     </div>
 {% endfor %}
 <div style = "text-align: left">
@@ -32,6 +35,11 @@
     	<h3>{{item[1]}}</h3>
     	<div>{{item[3]}}</div>
     	</div>
+    	{% if session['username'] == item[1] %}
+    	<div style = "text-align: right">
+    	<a class="btn btn-danger" href="/delete_comment/{{item[0]}}" role="button">✕ Удалить</a>
+    	</div>
+    	{% endif %}
     </div>
 {% endfor %}
 </div>
