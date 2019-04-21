@@ -102,6 +102,15 @@ def index():
     return render_template('index.html', username=session['username'], photo=photo)
 
 
+@app.route('/user/<int:user_id>')
+def user(user_id):
+    global current_page
+    current_page = 'user' + str(user_id)
+    photo = PhotoModel(db.get_connection()).get_all(user_id)
+    user = [UsersModel(db.get_connection()).get(user_id)]
+    return render_template('user.html', username=session['username'], photo=photo, user=user)
+
+
 @app.route('/photo/<int:photo_id>', methods=['GET', 'POST'])
 def posted_photo(photo_id):
     global current_page
@@ -122,6 +131,7 @@ def posted_photo(photo_id):
 
 @app.route('/add_photo', methods=['GET', 'POST'])
 def add_photo():
+    global current_page
     if 'username' not in session:
         return redirect('/login')
     form = AddPhotoForm()
@@ -135,8 +145,9 @@ def add_photo():
                 filename = '.'.join([filename[0] + 'A', filename[-1]])
         content.save(os.path.join('static', 'img', filename))
         nm = PhotoModel(db.get_connection())
-        nm.insert(title, filename, session['user_id'], 0)
-        return redirect("/index")
+        nm.insert(title, filename,
+                  session['user_id'], 0, session['username'])
+        return redirect("/" + current_page)
     return render_template('add_photo.html', title='Добавить фото', form=form, username=session['username'])
 
 

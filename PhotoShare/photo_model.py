@@ -9,17 +9,18 @@ class PhotoModel:
                                  title VARCHAR(100),
                                  content VARCHAR(1000),
                                  user_id INTEGER,
-                                 likes INTEGER
+                                 likes INTEGER,
+                                 user_name VARCHAR(100)
                                  )''')
         cursor.close()
         self.connection.commit()
 
-    def insert(self, title, content, user_id, likes):
+    def insert(self, title, content, user_id, likes, user_name):
         cursor = self.connection.cursor()
         cursor.execute('''INSERT INTO photo 
-                          (title, content, user_id, likes) 
-                          VALUES (?,?,?,?)''', (title, content, str(user_id),
-                                                str(likes)))
+                          (title, content, user_id, likes, user_name) 
+                          VALUES (?,?,?,?,?)''', (title, content, str(user_id),
+                                                  str(likes), user_name))
         cursor.close()
         self.connection.commit()
 

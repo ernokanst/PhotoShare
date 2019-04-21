@@ -6,6 +6,11 @@
 {% for item in photo | reverse %}
     <div class="alert alert-dark" role="alert">
         <h2>{{item[1]}}</h2>
+        {% if session['username'] == item[5] %}
+        <div>от <a href="/index">{{item[5]}}</a></div>
+        {% else %}
+        <div>от <a href="/user/{{item[3]}}">{{item[5]}}</a></div>
+        {% endif %}
         <div><a href="/photo/{{item[0]}}"><img src="/static/img/{{item[2]}}" width=500 alt="Ошибка загрузки фото"></a></div>
         <a href="/like_photo/{{item[0]}}">👍 {{item[4]}}</a>
     </div>
