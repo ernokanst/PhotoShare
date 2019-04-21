@@ -3,7 +3,7 @@
 {% block content %}
     <h1>Главная</h1>
     <a href="/add_photo">Добавить фото</a>
-{% for item in photo %}
+{% for item in photo | reverse %}
     <div class="alert alert-dark" role="alert">
         <h2>{{item[1]}}</h2>
         <div><a href="/photo/{{item[0]}}"><img src="/static/img/{{item[2]}}" width=500 alt="Ошибка загрузки фото"></a></div>
