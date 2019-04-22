@@ -105,7 +105,7 @@ def index():
 @app.route('/user/<int:user_id>')
 def user(user_id):
     global current_page
-    current_page = 'user' + str(user_id)
+    current_page = 'user/' + str(user_id)
     photo = PhotoModel(db.get_connection()).get_all(user_id)
     user = [UsersModel(db.get_connection()).get(user_id)]
     return render_template('user.html', username=session['username'], photo=photo, user=user)
